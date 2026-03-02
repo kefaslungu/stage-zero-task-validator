@@ -281,7 +281,9 @@ def main() -> int:
 
     if not args.skip_ssh:
         ssh_host = args.ssh_host or args.domain
-        ssh_key_path = normalize_key_path(args.ssh_private_key_path) if args.ssh_private_key_path else None
+        default_key = Path(__file__).parent / "HNGStage0"
+        raw_key = args.ssh_private_key_path or (str(default_key) if default_key.exists() else None)
+        ssh_key_path = normalize_key_path(raw_key) if raw_key else None
         results.append(check_ssh_connect(ssh_host, args.ssh_user, ssh_key_path))
         results.append(check_user_exists(ssh_host, args.ssh_user, ssh_key_path))
         results.append(check_user_sudo(ssh_host, args.ssh_user, ssh_key_path))
